@@ -1,6 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
 // states that we are using express & morgan in this file
+const campsiteRouter = require('./routes/campsiteRouter');
+// Brings in campsiteRouter.js
+
 const hostname = 'localhost';
 const port = 3000;
 
@@ -10,6 +13,8 @@ app.use(morgan('dev'));
 // Lets morgan log and print additional information to the screen
 app.use(express.json());
 // Express Middleware function
+app.use('/campsites', campsiteRouter);
+// Brings in campsiteRouter
 
 app.all('/campsites',(req,res, next) => {
     res.statusCode = 200;
@@ -38,26 +43,6 @@ app.delete('/campsites', (req, res) => {
     res.end('Deleting all campsites');
 });
 // We will be adding authentication priviliges to this later on.
-
-app.get('/campsites/:campsiteId', (req, res) => {
-    res.end(`Will send details of the campsite: ${req.params.campsiteId} to you`);
-}); 
-// Echoing back the request to make sure we see the requested campsiteId correctly.
-
-app.post('/campsites/:campsiteId', (req, res) => {
-    res.statusCode = 403;
-    res.end(`POST operation not supported on /campsites/${req.params.campsiteId}`);
-}); // We are not supporting POST requests but we set up a routing method to respond to a post request
-
-app.put('/campsites/:campsiteId', (req, res) => {
-    res.write(`Updating the campsite: ${req.params.campsiteId}\n`);
-    res.end(`Will update the campsite: ${req.body.name}
-        with description: ${req.body.description}`);
-}); // We are echoing back the JSON formatted body of the request message
-
-app.delete('/campsites/:campsiteId', (req, res) => {
-    res.end(`Deleting campsite: ${req.params.campsiteId}`);
-}); // Used to delete a specific campsite
 
 app.use(express.static(__dirname + '/public'));
 // Directs express to serve static files from the public folder
